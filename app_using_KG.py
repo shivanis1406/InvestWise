@@ -160,6 +160,8 @@ class KnowledgeGraphRAG:
             
         # Normalize query
         query = ' '.join(query.lower().split())
+
+        print(f"Normalized query inside retrieve_relevant_subgraph : {query}")
         
         # Compute query embedding
         with torch.no_grad():
@@ -183,11 +185,14 @@ class KnowledgeGraphRAG:
             )
         
         # Create deterministically ordered pairs
+        print(f"DEBUG : Comparing against similarity threshold : {similarity_threshold}")
         for idx, (head, tail) in enumerate(edge_keys):
             score = similarity_scores[idx].item()
+            print(f"score is {score}")
             if score >= similarity_threshold:
                 relation = self.knowledge_graph[head][tail]['relation']
                 triple = Triple(head, relation, tail)
+                print(f"triple : {triple}")
                 similarities[triple] = score
         
         # Sort by score and alphabetically for ties
@@ -473,7 +478,8 @@ def demonstrate_rag(query, seed):
             rag.add_triple(head, relation, tail)
         
         # Retrieve and expand relevant triples
-        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3)
+        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0)
+        print(f"DEBUG : relevant_triples are {relevant_triples}")
         expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
 
         # Sort triples for consistent output
@@ -508,4 +514,3 @@ if __name__ == "__main__":
         print(f"\n Input to LLM : {query}")
         ans = parse_query_with_groq(query, groq_api_key, seed)
         print(f"\n{ans}")
-
