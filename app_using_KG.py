@@ -108,7 +108,7 @@ class KnowledgeGraphRAG:
             embedding = embedding.to(dtype=torch.float32)
             
             # Sort for consistent ordering
-            embedding = torch.sort(embedding)[0]
+            #embedding = torch.sort(embedding)[0]
             
             return embedding.to(self.device)
         
@@ -188,11 +188,11 @@ class KnowledgeGraphRAG:
         print(f"DEBUG : Comparing against similarity threshold : {similarity_threshold}")
         for idx, (head, tail) in enumerate(edge_keys):
             score = similarity_scores[idx].item()
-            print(f"score is {score}")
+            #print(f"score is {score}")
             if score >= similarity_threshold:
                 relation = self.knowledge_graph[head][tail]['relation']
                 triple = Triple(head, relation, tail)
-                print(f"triple : {triple}")
+                #print(f"triple : {triple}")
                 similarities[triple] = score
         
         # Sort by score and alphabetically for ties
@@ -375,6 +375,31 @@ def createQuery(graph: str, question: str) -> str:
     graph = " ".join(graph.split())
     question = " ".join(question.split()).rstrip("?") + "?"
     
+    # Enhanced prompt for deterministic response
+    '''
+    query = f"""
+        Context Information:
+        {graph}
+
+        Question: {question}
+
+        Output Requirements:
+        1. Format: Return deterministically ordered list of lists categorizing each into positive/negative impact on the performace of the company mentioned in the user's question
+        2. Structure: Output must only be a JSON without additional text
+        Positive impact on company's performance : [["entity1", "entity2", "entity3"], ["entity4", "entity5", "entity6"]],
+        Negative impact on company's performance : [["entity7", "entity8", "entity9"], ["entity10", "entity11", "entity12"]]
+
+        3. Rules:
+            - *Inner List Size*: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
+            - *Coherence Within Inner Lists*: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
+            - *Independence of Outer Lists*: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
+        4. Entity Guidelines:
+            - Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
+            - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
+            - *No Connecting Words Within Entities*: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
+        
+    """
+    '''
     # Enhanced prompt for deterministic responses
     query = f"""
         Context Information:
@@ -386,16 +411,13 @@ def createQuery(graph: str, question: str) -> str:
         1. Format: Return a deterministically ordered list of lists
         2. Structure: [["entity1", "entity2", "entity3"], ["entity4", "entity5", "entity6"]]
         3. Rules:
-           - Sort entities alphabetically within each inner list
-           - Use exactly 3 entities per inner list
-           - Maintain consistent terminology
-           - Use fixed patterns for similar concepts
-           - Sort inner lists by their first entity
+            - *Inner List Size*: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
+            - *Coherence Within Inner Lists*: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
+            - *Independence of Outer Lists*: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
         4. Entity Guidelines:
-           - Use canonical forms for all entities
-           - Maintain consistent capitalization
-           - Use fixed terminology for similar concepts
-           - Round all numbers to 2 decimal places
+            - Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
+            - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
+            - *No Connecting Words Within Entities*: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
         
         Return only the structured list without additional text.
     """
@@ -478,7 +500,7 @@ def demonstrate_rag(query, seed):
             rag.add_triple(head, relation, tail)
         
         # Retrieve and expand relevant triples
-        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0)
+        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.8)
         print(f"DEBUG : relevant_triples are {relevant_triples}")
         expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
 
@@ -500,7 +522,7 @@ def demonstrate_rag(query, seed):
 
 if __name__ == "__main__":
     user_query = "What are Einstein's scientific achievements?"
-    user_query = "How does winter season affect Reliance's supply chain?"
+    user_query = "How does monsoon season affect Reliance's supply chain?"
     seed = 42
 
     results = demonstrate_rag(user_query, seed)
@@ -510,7 +532,11 @@ if __name__ == "__main__":
         print(results['natural_context'])
         print("\nStructured Context:")
         print(results['structured_context'])
-        query = createQuery(results['structured_context'], user_query)
-        print(f"\n Input to LLM : {query}")
-        ans = parse_query_with_groq(query, groq_api_key, seed)
-        print(f"\n{ans}")
+
+        if results['structured_context'] == "":
+            print(f"Not enough information available from the internet!")
+        else:
+            query = createQuery(results['structured_context'], user_query)
+            print(f"\n Input to LLM : {query}")
+            ans = parse_query_with_groq(query, groq_api_key, seed)
+            print(f"\n{ans}")
