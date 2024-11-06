@@ -521,7 +521,6 @@ def demonstrate_rag(query, seed):
         return None
 
 if __name__ == "__main__":
-    user_query = "What are Einstein's scientific achievements?"
     user_query = "How does monsoon season affect Reliance's supply chain?"
     seed = 42
 
@@ -534,9 +533,10 @@ if __name__ == "__main__":
         print(results['structured_context'])
 
         if results['structured_context'] == "":
-            print(f"Not enough information available from the internet!")
+            output = "Not enough information available from the internet!"
         else:
             query = createQuery(results['structured_context'], user_query)
             print(f"\n Input to LLM : {query}")
-            ans = parse_query_with_groq(query, groq_api_key, seed)
-            print(f"\n{ans}")
+            output = parse_query_with_groq(query, groq_api_key, seed)
+        
+        print(f"\n{ans}")
