@@ -525,8 +525,8 @@ def demonstrate_rag(query, seed):
         print(f"Error in demonstration: {e}")
         return None
 
-def main():
-    st.set_page_config(page_title="Link Logic", page_icon=":bar_chart:")
+def generate_analysis():
+    #st.set_page_config(page_title="Link Logic", page_icon=":bar_chart:")
     st.title("Link Logic - Insights Simplified for the Time-Strapped Investor.")
 
     st.write("This application uses a Knowledge Graph Retrieval Augmented Generation (KG-RAG) system to provide information about how monsoon season affects Reliance's supply chain.")
@@ -555,4 +555,4 @@ def main():
                 st.error("An error occurred while processing the query.")
 
 if __name__ == "__main__":
-    main()
+    generate_analysis()
