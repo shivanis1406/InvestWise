@@ -11,14 +11,11 @@ import os, requests
 import random
 import streamlit as st
 import json
-from convert_tuples_to_list import tuples_to_list
+from utils import tuples_to_list, generate_embeddings
 
 load_dotenv()
 
 groq_api_key = os.getenv('GROQ_API_KEY')
-
-# Load the pre-trained model
-model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
 def find_cosine_similarity(embedding1, embedding2):
   global model
@@ -156,8 +153,8 @@ class KnowledgeGraphRAG:
             text = ' '.join(text.lower().split())
             
             # Compute embedding
-            embedding = self.encoder.encode(text, convert_to_tensor=True)
-            
+            #embedding = self.encoder.encode(text, convert_to_tensor=True)
+            embedding = generate_embeddings(text)
             # Ensure consistent numerical precision
             embedding = embedding.to(dtype=torch.float32)
             
