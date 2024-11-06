@@ -457,6 +457,8 @@ def demonstrate_rag(query, seed):
         rag = KnowledgeGraphRAG()
         
         sample_triples = tuples_to_list('tuples.txt')
+        print(f"length of list of triples is {len(sample_triples)}")
+        print(sample_triples[:-2])
         
         #Create a graph
         for head, relation, tail in sample_triples:
@@ -465,15 +467,19 @@ def demonstrate_rag(query, seed):
         # Retrieve and expand relevant triples
         relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.8)
         print(f"DEBUG : relevant_triples are {relevant_triples}")
-        expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
-
-        # Sort triples for consistent output
-        expanded_triples.sort(key=lambda x: (x.head, x.relation, x.tail))
-
-        # Generate both natural and structured context
-        natural_context = rag.generate_context(expanded_triples, format_type='natural')
-        structured_context = rag.generate_context(expanded_triples, format_type='structured')
-        
+        if len(relevant_triples) > 0:
+            expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
+    
+            # Sort triples for consistent output
+            expanded_triples.sort(key=lambda x: (x.head, x.relation, x.tail))
+    
+            # Generate both natural and structured context
+            natural_context = rag.generate_context(expanded_triples, format_type='natural')
+            structured_context = rag.generate_context(expanded_triples, format_type='structured')
+        else:
+            structured_context = ""
+            natural_context = ""
+            
         return {
             'natural_context': natural_context,
             'structured_context': structured_context
