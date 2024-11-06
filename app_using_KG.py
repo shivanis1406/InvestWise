@@ -554,7 +554,7 @@ def generate_analysis():
                 output = parse_query_with_groq(query, groq_api_key, 42)
                 if output:
                     st.subheader("Response:")
-                    st.markdown(output)
+                    st.code(output)
                 else:
                     st.error("Unable to generate a response.")
             else:
