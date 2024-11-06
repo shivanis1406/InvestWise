@@ -456,7 +456,47 @@ def demonstrate_rag(query, seed):
         # Initialize system
         rag = KnowledgeGraphRAG()
         
-        sample_triples = tuples_to_list('tuples.txt')
+        #sample_triples = tuples_to_list('tuples.txt')
+        sample_triples = ([
+            ("Reliance Industries", "affected by", "Heavy Rainfall"),
+            ("Heavy Rainfall", "impacts", "Reliance Oil and Gas Production"),
+            ("Monsoon Season", "affects", "Reliance Supply Chain"),
+            ("Reliance Industries", "implements", "Flood Protection Measures"),
+            ("Reliance Industries", "prepares for", "Adverse Weather Events"),
+            ("Reliance Industries", "mitigates risk of", "Flooding"),
+            ("Reliance Industries", "monitors", "Rainfall Data for Planning"),
+            ("Monsoon Season", "influences", "Reliance Retail Distribution"),
+            ("Reliance Industries", "developed", "Climate Adaptation Strategies"),
+            ("Reliance Industries", "adapts logistics during", "Monsoon Season"),
+            ("Reliance Industries", "risk management includes", "Weather Data Analysis"),
+            ("Extreme Weather", "affects", "Reliance Refinery Operations"),
+            ("Reliance Industries", "has contingency plans for", "Monsoon Disruptions"),
+            ("Reliance Industries", "prepares for", "Cyclones and Heavy Rains"),
+            ("Reliance Petrochemical Facilities", "protected against", "Flooding"),
+            ("Rainfall Patterns", "impact", "Reliance Agricultural Supply Chain"),
+            ("Reliance Industries", "adjusts", "Production During Heavy Rainfall"),
+            ("Reliance Industries", "invests in", "Weather-Resilient Infrastructure"),
+            ("Reliance Retail", "affected by", "Monsoon Delays"),
+            ("Monsoon Delays", "disrupt", "Reliance Industries Supply"),
+            ("Reliance Industries", "ensures supply continuity during", "Extreme Weather"),
+            ("Flooding", "affects", "Reliance Petrochemical Production"),
+            ("Reliance Industries", "adapted infrastructure for", "High Rainfall Events"),
+            ("Reliance Industries", "analyzes", "Rainfall Data for Operational Planning"),
+            ("Heavy Rainfall", "impacts", "Reliance's Transportation Logistics"),
+            ("Reliance Industries", "manages", "Risks Associated with Extreme Weather"),
+            ("Cyclones", "pose risk to", "Reliance's Coastal Operations"),
+            ("Reliance Industries", "assesses", "Impact of Rainfall on Renewable Energy Operations"),
+            ("Weather Conditions", "impact", "Reliance Refinery Transport"),
+            ("Reliance Industries", "uses", "Real-Time Weather Monitoring Systems"),
+            ("Reliance Industries", "monsoon preparedness plan includes", "Supply Chain Adjustments"),
+            ("Reliance Industries", "partnerships for", "Improving Weather Data Accuracy"),
+            ("Reliance Industries", "operational planning incorporates", "Seasonal Rainfall Patterns"),
+            ("Rainfall", "affects", "Reliance’s Agricultural Commodity Supply"),
+            ("Reliance Industries", "works with", "Local Authorities for Flood Management"),
+            ("Reliance Industries", "adapts to", "Climate-Related Risks"),
+            ("Reliance Industries", "invests in", "Green Energy Projects to Combat Climate Change"),
+            ("Climate Change", "influences", "Reliance Industries' Long-Term Strategy")
+        ])
         print(f"length of list of triples is {len(sample_triples)}")
         print(sample_triples[:-2])
         
