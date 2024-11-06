@@ -505,7 +505,7 @@ def demonstrate_rag(query, seed):
             rag.add_triple(head, relation, tail)
         
         # Retrieve and expand relevant triples
-        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.8)
+        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.65)
         print(f"DEBUG : relevant_triples are {relevant_triples}")
         if len(relevant_triples) > 0:
             expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
