@@ -245,9 +245,14 @@ class KnowledgeGraphRAG:
         
         # Create deterministically ordered pairs
         print(f"DEBUG : Comparing against similarity threshold : {similarity_threshold}")
+        max_score = -1
+        max_score_triple = None
         for idx, (head, tail) in enumerate(edge_keys):
             score = similarity_scores[idx]
             #print(f"score is {score}")
+            if score > max_score:
+                max_score = score
+                max_score_triple = Triple(head, relation, tail)
             if score >= similarity_threshold:
                 relation = self.knowledge_graph[head][tail]['relation']
                 triple = Triple(head, relation, tail)
@@ -260,7 +265,7 @@ class KnowledgeGraphRAG:
             key=lambda x: (-x[1], x[0].head, x[0].relation, x[0].tail)
         )
         
-        return [triple for triple, _ in sorted_triples[:top_k]]
+        return [triple for triple, _ in sorted_triples[:top_k]], max_score, max_score_triple
 
     def expand_subgraph(
         self,
@@ -525,8 +530,9 @@ def demonstrate_rag(query, seed):
             rag.add_triple(head, relation, tail)
         
         # Retrieve and expand relevant triples
-        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.60)
+        relevant_triples, max_score, max_score_triple = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.60)
         print(f"DEBUG : relevant_triples are {relevant_triples}")
+        print(f"DEBUG : max_score {max_score} max_score_triple {max_score_triple}")
         if len(relevant_triples) > 0:
             expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
     
