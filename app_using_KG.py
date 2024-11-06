@@ -36,12 +36,20 @@ def parse_response(raw_response):
     
     # Step 3: Display the cause-effect map
     parsed_response = ""
+    start = 1
     for i, sequence_map in enumerate(cause_effect_map, start=1):
         print(f"Sequence {i}:")
         parsed_response += "\n" + f"Sequence {i} : "
+        start = 1
         for step in sequence_map:
-            print("  ->", step)
-            parsed_response += f" -> {step}"
+            if start == 0:
+                print("  ->", step)
+                parsed_response += f" -> {step}"
+            else:
+                print(step)
+                parsed_response += step  
+                start = 0
+                
     return parsed_response
 
 @dataclass
@@ -554,7 +562,7 @@ def generate_analysis():
                 output = parse_query_with_groq(query, groq_api_key, 42)
                 if output:
                     st.subheader("Response:")
-                    st.code(output)
+                    st.text(output)
                 else:
                     st.error("Unable to generate a response.")
             else:
