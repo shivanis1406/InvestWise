@@ -501,7 +501,7 @@ def generate_analysis():
         with st.spinner("Processing your query..."):
             results = demonstrate_rag(user_query, 42)
             print(f"DEBUG : results : {results}")
-            if results:
+            if results["structured_context"] != "":
                 #st.subheader("Natural Language Context:")
                 #st.write(results['natural_context'])
 
