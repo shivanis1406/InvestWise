@@ -10,10 +10,39 @@ from dotenv import load_dotenv
 import os, requests
 import random
 import streamlit as st
+import json
 
 load_dotenv()
 
 groq_api_key = os.getenv('GROQ_API_KEY')
+
+def parse_response(raw_response):    
+    # Example raw response as a string
+    #raw_response = "[[\"entity1\", \"entity2\", \"entity3\"], [\"entity4\", \"entity5\", \"entity6\"]]"
+    
+    # Step 1: Parse the raw_response string into a Python list
+    entity_sequences = json.loads(raw_response)
+    
+    # Step 2: Build a cause-effect map by creating a progression for each sequence
+    cause_effect_map = []
+    for sequence in entity_sequences:
+        sequence_map = []
+        for i in range(len(sequence) - 1):
+            # Define a step-by-step cause-effect relationship
+            cause = sequence[i]
+            effect = sequence[i + 1]
+            sequence_map.append(f"{cause} leads to {effect}")
+        cause_effect_map.append(sequence_map)
+    
+    # Step 3: Display the cause-effect map
+    parsed_response = ""
+    for i, sequence_map in enumerate(cause_effect_map, start=1):
+        print(f"Sequence {i}:")
+        parsed_response += f"\nSequence {i} : "
+        for step in sequence_map:
+            print("  ->", step)
+            parsed_response += f" -> {step}"
+    return parsed_response
 
 @dataclass
 class Triple:
@@ -359,7 +388,9 @@ def parse_query_with_groq(
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         response.raise_for_status()
-        return response.json()['choices'][0]['message']['content']
+        raw_response =  response.json()['choices'][0]['message']['content']
+        parsed_response = parse_response(raw_response)
+        return parsed_response
     except Exception as e:
         print(f"Error in API request: {e}")
         return None
@@ -376,31 +407,6 @@ def createQuery(graph: str, question: str) -> str:
     graph = " ".join(graph.split())
     question = " ".join(question.split()).rstrip("?") + "?"
     
-    # Enhanced prompt for deterministic response
-    '''
-    query = f"""
-        Context Information:
-        {graph}
-
-        Question: {question}
-
-        Output Requirements:
-        1. Format: Return deterministically ordered list of lists categorizing each into positive/negative impact on the performace of the company mentioned in the user's question
-        2. Structure: Output must only be a JSON without additional text
-        Positive impact on company's performance : [["entity1", "entity2", "entity3"], ["entity4", "entity5", "entity6"]],
-        Negative impact on company's performance : [["entity7", "entity8", "entity9"], ["entity10", "entity11", "entity12"]]
-
-        3. Rules:
-            - *Inner List Size*: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
-            - *Coherence Within Inner Lists*: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
-            - *Independence of Outer Lists*: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
-        4. Entity Guidelines:
-            - Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
-            - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
-            - *No Connecting Words Within Entities*: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
-        
-    """
-    '''
     # Enhanced prompt for deterministic responses
     query = f"""
         Context Information:
