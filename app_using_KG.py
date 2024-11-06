@@ -38,7 +38,7 @@ def parse_response(raw_response):
     parsed_response = ""
     for i, sequence_map in enumerate(cause_effect_map, start=1):
         print(f"Sequence {i}:")
-        parsed_response += f"\nSequence {i} : "
+        parsed_response += "\n" + f"Sequence {i} : "
         for step in sequence_map:
             print("  ->", step)
             parsed_response += f" -> {step}"
@@ -544,11 +544,11 @@ def generate_analysis():
             results = demonstrate_rag(user_query, 42)
             print(f"DEBUG : results : {results}")
             if results:
-                st.subheader("Natural Language Context:")
-                st.write(results['natural_context'])
+                #st.subheader("Natural Language Context:")
+                #st.write(results['natural_context'])
 
-                st.subheader("Structured Context:")
-                st.write(results['structured_context'])
+                #st.subheader("Structured Context:")
+                #st.write(results['structured_context'])
 
                 query = createQuery(results['structured_context'], user_query)
                 output = parse_query_with_groq(query, groq_api_key, 42)
