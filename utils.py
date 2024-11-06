@@ -1,3 +1,9 @@
+from transformers import BertTokenizer, BertModel
+import torch
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+model = BertModel.from_pretrained("bert-base-uncased")
+
 def tuples_to_list(file_path, N=3):  
     with open(file_path, 'r') as file:
         # Reading all lines from the file
@@ -27,7 +33,16 @@ def tuples_to_list(file_path, N=3):
                 tuple_list.append(tuple(elements))
         
         return list(set(sorted(tuple_list)))
-#for l in tuples_list:
-#    print(l)
 
-#print(f"Length of list is {len(tuples_list)}")
+def generate_embeddings(text):
+    global model
+    global tokenizer
+    encoded_input = tokenizer(text, return_tensors='pt')
+    #output = model(**encoded_input)
+    with torch.no_grad():
+        outputs = model(**encoded_input)
+        last_hidden_states = outputs.last_hidden_state  # Shape: [batch_size, sequence_length, hidden_size]
+
+        sentence_embedding = last_hidden_states.mean(dim=1)  # Shape: [1, hidden_size]
+        return sentence_embedding
+
