@@ -1,9 +1,9 @@
 import numpy as np
 from typing import List, Dict, Tuple, Set, Optional
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, util
 import networkx as nx
 import torch
-import torch.nn.functional as F
+#import torch.nn.functional as F
 from dataclasses import dataclass
 from collections import defaultdict
 from dotenv import load_dotenv
@@ -16,6 +16,21 @@ from convert_tuples_to_list import tuples_to_list
 load_dotenv()
 
 groq_api_key = os.getenv('GROQ_API_KEY')
+
+# Load the pre-trained model
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
+def find_cosine_similarity(embedding1, embedding2):
+  global model
+  # Encode the texts to get their embeddings
+  #embedding1 = model.encode(text1, convert_to_tensor=True)
+  #embedding2 = model.encode(text2, convert_to_tensor=True)
+  
+  # Compute cosine similarity
+  cosine_sim = util.pytorch_cos_sim(embedding1, embedding2)
+  
+  # Print the cosine similarity score
+  return cosine_sim.item()
 
 def parse_response(raw_response):    
     # Example raw response as a string
@@ -201,7 +216,9 @@ class KnowledgeGraphRAG:
         query = ' '.join(query.lower().split())
 
         print(f"Normalized query inside retrieve_relevant_subgraph : {query}")
-        
+        #Convert query to the formar {head} {relation} {tail} using chatgpt
+        #parsed_query = parse_query(query)
+
         # Compute query embedding
         with torch.no_grad():
             query_embedding = self._compute_embedding(query)
@@ -212,21 +229,24 @@ class KnowledgeGraphRAG:
         
         # Stack embeddings in deterministic order
         edge_keys = sorted(self.edge_embeddings.keys())
-        edge_embeddings_tensor = torch.stack([
-            self.edge_embeddings[key] for key in edge_keys
-        ])
-        
+        #edge_embeddings_tensor = torch.stack([
+        #    self.edge_embeddings[key] for key in edge_keys
+        #])
+        similarity_scores = []
+        for key in edge_keys:
+            similarity_scores.append(find_cosine_similarity(query_embedding, self.edge_embeddings[key]))
+
         # Compute similarities with fixed precision
-        with torch.no_grad():
-            similarity_scores = F.cosine_similarity(
-                query_embedding.unsqueeze(0),
-                edge_embeddings_tensor
-            )
+        #with torch.no_grad():
+        #    similarity_scores = F.cosine_similarity(
+        #        query_embedding.unsqueeze(0),
+        #        edge_embeddings_tensor
+        #    )
         
         # Create deterministically ordered pairs
         print(f"DEBUG : Comparing against similarity threshold : {similarity_threshold}")
         for idx, (head, tail) in enumerate(edge_keys):
-            score = similarity_scores[idx].item()
+            score = similarity_scores[idx]
             #print(f"score is {score}")
             if score >= similarity_threshold:
                 relation = self.knowledge_graph[head][tail]['relation']
@@ -496,7 +516,7 @@ def demonstrate_rag(query, seed):
         #    ("Reliance Industries", "adapts to", "Climate-Related Risks"),
         #    ("Reliance Industries", "invests in", "Green Energy Projects to Combat Climate Change"),
         #    ("Climate Change", "influences", "Reliance Industries' Long-Term Strategy")
-        ])
+        #])
         print(f"length of list of triples is {len(sample_triples)}")
         print(sample_triples[:-2])
         
@@ -505,7 +525,7 @@ def demonstrate_rag(query, seed):
             rag.add_triple(head, relation, tail)
         
         # Retrieve and expand relevant triples
-        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.65)
+        relevant_triples = rag.retrieve_relevant_subgraph(query, top_k=3, similarity_threshold=0.60)
         print(f"DEBUG : relevant_triples are {relevant_triples}")
         if len(relevant_triples) > 0:
             expanded_triples = rag.expand_subgraph(relevant_triples, hops=1)
