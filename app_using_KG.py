@@ -545,7 +545,7 @@ def main():
 
     st.write("This application uses a Knowledge Graph Retrieval Augmented Generation (KG-RAG) system to provide information about how monsoon season affects Reliance's supply chain.")
 
-    user_query = st.text_input("Enter your query:", "How does monsoon season affect Reliance's supply chain?")
+    user_query = st.text_input("Enter your query:", placeholder="How does monsoon season affect Reliance's supply chain?")
 
     if st.button("Submit"):
         with st.spinner("Processing your query..."):
