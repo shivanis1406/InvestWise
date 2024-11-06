@@ -495,6 +495,24 @@ def demonstrate_rag(query, seed):
             ("Climate Change", "influences", "Reliance Industries' Long-Term Strategy")
         ])
 
+        sample_triples = sorted([
+    ("Reliance Jio Infocomm Limited", "operates", "telecommunications services", "providing 4G and 5G mobile network services across India."),
+    ("Reliance Retail Limited", "manages", "retail operations", "operating supermarkets, hypermarkets, and e-commerce platforms offering a wide range of products."),
+    ("Reliance Life Sciences", "engages in", "biotechnology research and development", "focusing on stem cell research, molecular medicine, and clinical trials."),
+    ("Reliance Capital Limited", "offers", "financial services", "including asset management, insurance, and lending services."),
+    ("Reliance Infrastructure Limited", "develops", "infrastructure projects", "in sectors such as power, roads, and urban infrastructure."),
+    ("Reliance Industrial Infrastructure Limited", "provides", "infrastructure services", "including construction and maintenance of pipelines, roads, and other facilities."),
+    ("Reliance Industrial Investments and Holdings Limited", "holds", "investments in various sectors", "including energy, petrochemicals, and retail."),
+    ("Reliance Eros Productions LLP", "produces", "film and television content", "collaborating with Eros International to create and distribute media content."),
+    ("Reliance Jio Platforms Limited", "invests in", "technology and digital services", "including artificial intelligence, internet of things, and cloud computing."),
+    ("Reliance New Energy Solar Limited", "focuses on", "renewable energy", "investing in solar energy projects and technologies."),
+    ("Reliance New Materials Limited", "produces", "advanced materials", "including carbon fiber and composites for various industrial applications."),
+    ("Reliance Bio-Energy Limited", "engages in", "biofuels production", "converting agricultural waste into biofuels and other renewable energy sources."),
+    ("Reliance MediaWorks Limited", "operates", "media and entertainment services", "including film processing, digital cinema, and media content distribution."),
+    ("Reliance Commercial Dealers Limited", "distributes", "consumer electronics", "offering a range of electronic products through retail channels."),
+    ("Reliance Brands Limited", "manages", "luxury and premium brands", "bringing international brands to the Indian market through retail partnerships."),
+    ("Reliance Logistics Limited", "provides", "logistics and supply chain solutions", "including warehousing, transportation, and distribution services.")
+        ])
         #Create a graph
         for head, relation, tail in sample_triples:
             rag.add_triple(head, relation, tail)
