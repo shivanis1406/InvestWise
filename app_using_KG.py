@@ -520,23 +520,33 @@ def demonstrate_rag(query, seed):
         print(f"Error in demonstration: {e}")
         return None
 
+def main():
+    st.set_page_config(page_title="Link Logic", page_icon=":bar_chart:")
+    st.title("Link Logic - Insights Simplified for the Time-Strapped Investor.")
+
+    st.write("This application uses a Knowledge Graph Retrieval Augmented Generation (KG-RAG) system to provide information about how monsoon season affects Reliance's supply chain.")
+
+    user_query = st.text_input("Enter your query:", "How does monsoon season affect Reliance's supply chain?")
+
+    if st.button("Submit"):
+        with st.spinner("Processing your query..."):
+            results = demonstrate_rag(user_query, 42)
+            if results:
+                st.subheader("Natural Language Context:")
+                st.write(results['natural_context'])
+
+                st.subheader("Structured Context:")
+                st.write(results['structured_context'])
+
+                query = createQuery(results['structured_context'], user_query)
+                output = parse_query_with_groq(query, groq_api_key, 42)
+                if output:
+                    st.subheader("Response:")
+                    st.write(output)
+                else:
+                    st.error("Unable to generate a response.")
+            else:
+                st.error("An error occurred while processing the query.")
+
 if __name__ == "__main__":
-    user_query = "How does monsoon season affect Reliance's supply chain?"
-    seed = 42
-
-    results = demonstrate_rag(user_query, seed)
-    if results:
-        print(f"\nQuery: {user_query}")
-        print("\nNatural Language Context:")
-        print(results['natural_context'])
-        print("\nStructured Context:")
-        print(results['structured_context'])
-
-        if results['structured_context'] == "":
-            output = "Not enough information available from the internet!"
-        else:
-            query = createQuery(results['structured_context'], user_query)
-            print(f"\n Input to LLM : {query}")
-            output = parse_query_with_groq(query, groq_api_key, seed)
-        
-        print(f"\n{ans}")
+    main()
