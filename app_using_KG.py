@@ -441,20 +441,6 @@ def demonstrate_rag(query, seed):
         # Initialize system
         rag = KnowledgeGraphRAG()
         
-        # Add sample knowledge
-        '''
-        sample_triples = [
-            ("Einstein", "developed", "Theory of Relativity"),
-            ("Theory of Relativity", "describes", "Spacetime"),
-            ("Einstein", "won", "Nobel Prize"),
-            ("Nobel Prize", "awarded in", "1921"),
-            ("Einstein", "worked at", "Patent Office"),
-            ("Patent Office", "located in", "Bern"),
-            ("Einstein", "born in", "Ulm"),
-            ("Ulm", "located in", "Germany")
-        ]
-        '''
-
         sample_triples = sorted([
             ("Reliance Industries", "affected by", "Heavy Rainfall"),
             ("Heavy Rainfall", "impacts", "Reliance Oil and Gas Production"),
@@ -550,6 +536,7 @@ def main():
     if st.button("Submit"):
         with st.spinner("Processing your query..."):
             results = demonstrate_rag(user_query, 42)
+            print(f"DEBUG : results : {results}")
             if results:
                 st.subheader("Natural Language Context:")
                 st.write(results['natural_context'])
