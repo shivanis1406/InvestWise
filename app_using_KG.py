@@ -252,10 +252,11 @@ class KnowledgeGraphRAG:
             #print(f"score is {score}")
             if score > max_score:
                 max_score = score
+                relation = self.knowledge_graph[head][tail]['relation']
                 max_score_triple = Triple(head, relation, tail)
             if score >= similarity_threshold:
-                relation = self.knowledge_graph[head][tail]['relation']
-                triple = Triple(head, relation, tail)
+                #relation = self.knowledge_graph[head][tail]['relation']
+                #triple = Triple(head, relation, tail)
                 #print(f"triple : {triple}")
                 similarities[triple] = score
         
