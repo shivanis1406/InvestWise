@@ -1,1 +1,1 @@
-sentence_transformer
+sentence_transformers
