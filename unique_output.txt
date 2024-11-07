@@ -1,4 +1,4 @@
-This file contains structured knowledge in the form of triplets: (Subject; Predicate; Object) extracted from a PDF of the company Reliance
+Structured knowledge in the form of triplets: (Subject; Predicate; Object) for the company Reliance is as follows-
 
 (1 AED; equals; 22.7125 I)
 (1 AUD; equals; 54.1125 I)
