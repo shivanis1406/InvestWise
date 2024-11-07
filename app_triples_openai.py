@@ -36,7 +36,7 @@ def initialize_assistants_and_vector_stores():
     vector_store1 = client.beta.vector_stores.create(name="Knowledeg Graph")
     
     # Ready the files for upload to OpenAI
-    file_paths = ["unique_output.txt"]
+    #file_paths = ["unique_output.txt"]
     file_paths = ["RIL-Integrated-Annual-Report-2023-24.pdf"]
     file_streams = [open(path, "rb") for path in file_paths]
     
