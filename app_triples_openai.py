@@ -204,5 +204,4 @@ def main():
         st.text_area("Response", response, height=400)
 
 if __name__ == "__main__":
-    tuples_to_list("tuples.txt", N=3)
     main()
