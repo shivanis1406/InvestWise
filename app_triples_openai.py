@@ -146,10 +146,10 @@ Output Requirements:
         2. Structure: [["entity1", "entity2", "entity3"], ["entity4", "entity5", "entity6"]]
         3. Rules:
             - Inner List Size: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
+            - Entity description: Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
             - Coherence Within Inner Lists: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
             - Independence of Outer Lists: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
         4. Entity Guidelines:
-            - Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
             - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
             - No Connecting Words Within Entities: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
         
