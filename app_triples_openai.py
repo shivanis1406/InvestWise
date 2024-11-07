@@ -26,7 +26,7 @@ def initialize_assistants_and_vector_stores():
     assistant1 = client.beta.assistants.create(
       name="Processing Level",
       instructions="You are an expert financial analyst. Use you knowledge base to answer questions about any company.",
-      model="gpt-4o-mini",
+      model="gpt-4o",
       tools=[{"type": "file_search"}],
       temperature=0,
       top_p = 0.85
