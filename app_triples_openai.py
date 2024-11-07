@@ -193,8 +193,8 @@ Output Requirements:
 def main():
     st.title("Company Information Analyzer")
 
-    company_name = st.text_input("Enter the company name:", "Reliance")
-    user_query = st.text_area("Enter your query:", "reliance in healthcare")
+    company_name = st.text_input("Enter the company name:", placeholder = "Reliance")
+    user_query = st.text_area("Enter your query:", placeholder = "Reliance in healthcare")
 
     if st.button("Analyze"):
         global assistant1
