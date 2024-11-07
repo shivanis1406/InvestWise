@@ -36,7 +36,7 @@ def initialize_assistants_and_vector_stores():
     vector_store1 = client.beta.vector_stores.create(name="Knowledeg Graph")
     
     # Ready the files for upload to OpenAI
-    file_paths = ["tuples.txt"]
+    file_paths = ["unique_output.txt"]
     file_streams = [open(path, "rb") for path in file_paths]
     
     # Use the upload and poll SDK helper to upload the files, add them to the vector store,
