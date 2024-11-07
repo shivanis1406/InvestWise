@@ -128,6 +128,7 @@ def parse_response(raw_response):
                 print(step)
                 parsed_response += step 
                 start = 0
+        parsed_response += "\n"
                 
     return parsed_response
 
@@ -200,7 +201,7 @@ def main():
         global assistant1
         raw_response = analyze_company_information(company_name, assistant1.id, user_query)
         response = parse_response(raw_response)
-        st.text_area("Response", response, height=200)
+        st.text_area("Response", response, height=400)
 
 if __name__ == "__main__":
     tuples_to_list("tuples.txt", N=3)
