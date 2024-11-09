@@ -178,7 +178,6 @@ Format: Return an ordered list of lists with the structure [["entity1", "entity2
 (III) Distinct Paths in Outer Lists: 
 1. Each outer list must represent an independent sequence of reasoning or line of thought on the topic, providing distinct perspectives on the question.
 
-Say "Sorry, I do not have sufficient information to generate a response!" if (I), (II) and (III) could not be met while generating a response.
 Return only the structured list without additional text."""
             }
         ]
