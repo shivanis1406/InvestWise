@@ -165,23 +165,19 @@ Output Requirements that must be followed:
 
 Format: Return an ordered list of lists with the structure [["entity1", "entity2", "entity3", "entity4"], ["entity1", "entity2", "entity3"]], where each outer list represents a separate sequence of reasoning or business strategy.
 
-Inner List Structure:
+(I) Inner List Structure:
+1. Entity Count : Each inner list must contain exactly 3 to 5 entities. No inner list should have fewer than 3 or more than 5 entities.
+2. Logical Flow : Within each inner list, each entity must logically lead to the next, forming a clear progression. Each step must build upon the previous one to create a coherent sequence.
+3. Concise Phrasing : Use specific, short phrases or terms for each entity. Avoid vague or generic terms, and make sure each entity directly represents a distinct stage in the sequence.
 
-Entity Count: Each inner list must contain exactly 3 to 5 entities. No inner list should have fewer than 3 or more than 5 entities.
-Logical Flow: Within each inner list, each entity should logically lead to the next, forming a clear progression. Each step must build upon the previous one to create a coherent sequence.
-Concise Phrasing: Use specific, short phrases or terms for each entity. Avoid vague or generic terms, and make sure each entity directly represents a distinct stage in the sequence.
-Avoidance of Connectors:
+(II) Avoidance of Connectors:
+1. Each entity must be a standalone term without connecting words such as "leads to," "because," or "therefore."
+2. Instead, each list must imply the cause-effect relationship through the sequence of entities rather than through explicit connectors.
 
-Each entity should be a standalone term without connecting words such as "leads to," "because," or "therefore."
-Instead, each list should imply the cause-effect relationship through the sequence of entities rather than through explicit connectors.
-Distinct Paths in Outer Lists:
+(III) Distinct Paths in Outer Lists: 
+1. Each outer list must represent an independent sequence of reasoning or line of thought on the topic, providing distinct perspectives on the question.
 
-Each outer list should represent an independent sequence of reasoning or line of thought on the topic, providing distinct perspectives on the question.
-Example Answer Format:
-
-Your answer should look like:
-[["Entity1", "Entity2", "Entity3", "Entity4"],
-    ["Entity1", "Entity2", "Entity3"]]
+Say "Sorry, I do not have sufficient information to generate a response!" if (I), (II) and (III) could not be met while generating a response.
 Return only the structured list without additional text."""
             }
         ]
