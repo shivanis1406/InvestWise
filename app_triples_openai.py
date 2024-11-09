@@ -99,7 +99,8 @@ def tuples_to_list(file_path, N=3):
 def parse_response(raw_response):    
     # Example raw response as a string
     #raw_response = "[[\"entity1\", \"entity2\", \"entity3\"], [\"entity4\", \"entity5\", \"entity6\"]]"
-    
+    if "[[" not in raw_response:
+        return raw_response
     # Step 1: Parse the raw_response string into a Python list
     entity_sequences = json.loads(raw_response)
     
