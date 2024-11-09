@@ -225,7 +225,7 @@ Your answer should look like :
 def main():
     st.title("Link Logic - Insights Simplified for the Time-Strapped Investor!")
 
-    company_name = st.text_input("Enter the company name:", placeholder = "Reliance")
+    company_name = st.selectbox("Select the company name:", options=["Reliance"])
     user_query = st.text_area("Enter your query:", placeholder = "Reliance in healthcare")
 
     if st.button("Analyze"):
