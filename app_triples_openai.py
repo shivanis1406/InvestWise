@@ -180,7 +180,7 @@ Format: Return an ordered list of lists with the structure [["entity1", "entity2
 
 Return only the structured list without additional text.
 
-Your answer should look like : 
+Example output : 
 [["Reliance Industries", "Diagnostics Market Entry", "Healthcare Expansion", "Revenue Diversification"],
     ["Reliance Industries", "Diagnostics Market Entry", "Increased Competition", "Market Share Growth"],
     ["Reliance Industries", "Diagnostics Market Entry", "Strategic Partnerships", "Operational Synergies", "Cost Efficiency"]]
