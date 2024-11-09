@@ -136,24 +136,53 @@ def parse_response(raw_response):
 def analyze_company_information(company_name, assistant_id, user_query):
     global client
     thread = client.beta.threads.create(
-        messages=[
+        #messages=[
+        #    {
+        #        "role": "user",
+        #        "content": f"""Use you knowledge base to answer question : {user_query} about company {company_name}. 
+#Refine and answer questions about financial statements using structured, ordered lists of entities. Follow these output requirements:
+
+#Output Requirements that must be followed:
+#        1. Format: Return a deterministically ordered list of lists
+#        2. Structure: [["entity1", "entity2", "entity3", "entity4", "entity5"], ["entity1", "entity2", "entity3", "entity4"]]
+#        3. Rules:
+#            - Inner List Size: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
+#            - Entity description: Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
+#            - Coherence Within Inner Lists: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
+#            - Independence of Outer Lists: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
+#            - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
+#            - No Connecting Words Within Entities: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
+#        
+#        Return only the structured list without additional text.""",
+#            }
+ #       ]
+        messages = [
             {
                 "role": "user",
-                "content": f"""Use you knowledge base to answer question : {user_query} about company {company_name}. 
-Refine and answer questions about financial statements using structured, ordered lists of entities. Follow these output requirements:
+                "content":f"""Prompt: Use your knowledge base to answer the question: {user_query} about the company {company_name}. When refining answers related to financial statements or business strategies, structure your response using an ordered list of entities. Follow the output requirements strictly to ensure a well-structured answer.
 
 Output Requirements that must be followed:
-        1. Format: Return a deterministically ordered list of lists
-        2. Structure: [["entity1", "entity2", "entity3", "entity4", "entity5"], ["entity1", "entity2", "entity3", "entity4"]]
-        3. Rules:
-            - Inner List Size: Each inner list must contain exactly between 3 to 5 entities. No inner list should have fewer than 3 or more than 5 items.
-            - Entity description: Each entity should be concise and specific, using a short phrase that conveys a clear concept or idea directly tied to the question.
-            - Coherence Within Inner Lists: Each entity within an inner list must logically lead to the next entity, forming a clear, step-by-step progression that builds a coherent sequence. Entity1 should naturally lead to entity2, which should lead to entity3, and so on. The entities should represent distinct yet connected ideas relevant to the question.
-            - Independence of Outer Lists: Each outer list should represent a separate, self-contained line of reasoning or sequence of ideas related to the question, so that each list offers a distinct path for exploring the topic.
-            - Avoid generic or vague terms; each entity should clearly reflect a step in the logical progression of the list.
-            - No Connecting Words Within Entities: Refrain from using connectors like "because," "therefore," or "leads to." Each cause-effect relationship should be broken down into separate entities within the list.
-        
-        Return only the structured list without additional text.""",
+
+Format: Return an ordered list of lists with the structure [["entity1", "entity2", "entity3", "entity4"], ["entity1", "entity2", "entity3"]], where each outer list represents a separate sequence of reasoning or business strategy.
+
+Inner List Structure:
+
+Entity Count: Each inner list must contain exactly 3 to 5 entities. No inner list should have fewer than 3 or more than 5 entities.
+Logical Flow: Within each inner list, each entity should logically lead to the next, forming a clear progression. Each step must build upon the previous one to create a coherent sequence.
+Concise Phrasing: Use specific, short phrases or terms for each entity. Avoid vague or generic terms, and make sure each entity directly represents a distinct stage in the sequence.
+Avoidance of Connectors:
+
+Each entity should be a standalone term without connecting words such as "leads to," "because," or "therefore."
+Instead, each list should imply the cause-effect relationship through the sequence of entities rather than through explicit connectors.
+Distinct Paths in Outer Lists:
+
+Each outer list should represent an independent sequence of reasoning or line of thought on the topic, providing distinct perspectives on the question.
+Example Answer Format:
+
+Your answer should look like:
+[["Entity1", "Entity2", "Entity3", "Entity4"],
+    ["Entity1", "Entity2", "Entity3"]]
+Return only the structured list without additional text."""
             }
         ]
     )
