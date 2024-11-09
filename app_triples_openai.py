@@ -178,7 +178,14 @@ Format: Return an ordered list of lists with the structure [["entity1", "entity2
 (III) Distinct Paths in Outer Lists: 
 1. Each outer list must represent an independent sequence of reasoning or line of thought on the topic, providing distinct perspectives on the question.
 
-Return only the structured list without additional text."""
+Return only the structured list without additional text.
+
+Example output: 
+[    ["Reliance Industries", "Diagnostics Market Entry", "Healthcare Expansion", "Revenue Diversification"],
+    ["Reliance Industries", "Diagnostics Market Entry", "Increased Competition", "Market Share Growth"],
+    ["Reliance Industries", "Diagnostics Market Entry", "Strategic Partnerships", "Operational Synergies", "Cost Efficiency"]
+]
+"""
             }
         ]
     )
