@@ -33,7 +33,16 @@ def initialize_assistants_and_vector_stores():
       )
     
     # Create a vector store
-    vector_store1 = client.beta.vector_stores.create(name="Knowledeg Graph")
+    vector_store1 = client.beta.vector_stores.create(
+        name="Knowledeg Graph",
+        chunking_strategy={
+        "type": "static",
+        "static": {
+            "max_chunk_size_tokens": 300,  # Set your desired max chunk size
+            "chunk_overlap_tokens": 100    # Set your desired overlap size
+        }
+    }
+    )
     
     # Ready the files for upload to OpenAI
     file_paths = ["unique_output.txt"]
