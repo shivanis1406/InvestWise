@@ -479,7 +479,7 @@ def demonstrate_rag(query, seed):
         # Initialize system
         rag = KnowledgeGraphRAG()
         
-        sample_triples = tuples_to_list('tuples.txt')
+        sample_triples = tuples_to_list('unique_output.txt')
         #sample_triples = ([
         #    ("Reliance Industries", "affected by", "Heavy Rainfall"),
         #    ("Heavy Rainfall", "impacts", "Reliance Oil and Gas Production"),
