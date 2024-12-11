@@ -1,6 +1,7 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import JSONFormatter
 
+#Add code to search for videos using serp api
 videos = [
 "https://www.youtube.com/watch?v=TtTQyvvirwg",
 "https://www.youtube.com/watch?v=tgSiAW31cGY",
