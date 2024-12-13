@@ -1,12 +1,14 @@
+import json
+import os
 from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
+import math
+import sys
 
 class EmbeddingsService:
     def __init__(self, pinecone_api_key: str, index_name: str):
         # Initialize Pinecone
         self.pc = Pinecone(api_key=pinecone_api_key)
-        
-        
         self.index_name = index_name
         self.index = self.pc.Index(index_name)
         
@@ -21,9 +23,15 @@ class EmbeddingsService:
         print(f"Embedding length: {len(embeddings[0])}")  # This should print 384
         return embeddings
 
+    def get_size_in_bytes(self, data):
+        """
+        Calculate the size of the data in bytes.
+        """
+        return sys.getsizeof(data) * 12
+
     def store_embeddings_in_pinecone(self, sentences: list):
         """
-        Generate embeddings for sentences and store them in Pinecone with metadata.
+        Generate embeddings for sentences and store them in Pinecone with metadata in batches.
         
         Args:
             sentences (list): List of dictionaries containing "text" and metadata fields.
@@ -49,10 +57,39 @@ class EmbeddingsService:
             }
             for i in range(len(texts))
         ]
-        
-        # Upsert embeddings with metadata into Pinecone index
-        self.index.upsert(vectors=to_upsert)
-        print(f"Stored {len(texts)} embeddings in Pinecone with metadata.")
+
+        # Batch and check size before sending to Pinecone
+        current_batch = []
+        current_size = 0
+        batch_count = 0
+        current_count = 0
+
+        for vector in to_upsert:
+            vector_size = self.get_size_in_bytes(vector)
+            
+            if current_size + vector_size > 3 * 1024 * 1024 or current_count > 990:  # 1.5MB limit
+                # Send current batch
+                self.index.upsert(vectors=current_batch)
+                batch_count += 1
+                print(f"Stored batch {batch_count} with {len(current_batch)} embeddings.")
+                
+                # Reset batch
+                current_batch = []
+                current_size = 0
+                current_count = 0
+            
+            # Add vector to current batch
+            current_batch.append(vector)
+            current_size += vector_size
+            current_count += 1
+
+        # Send the last batch if not empty
+        if current_batch:
+            self.index.upsert(vectors=current_batch)
+            batch_count += 1
+            print(f"Stored batch {batch_count} with {len(current_batch)} embeddings.")
+
+        print(f"Stored {len(sentences)} embeddings in Pinecone with metadata.")
 
 '''
 # Usage example:
