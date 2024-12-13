@@ -2,15 +2,29 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import JSONFormatter, SRTFormatter
 from serpapi import GoogleSearch
 from dotenv import load_dotenv
-import os, json
-from language_tool_python import LanguageTool
+import os, json, re
+from spellchecker import SpellChecker
 
 load_dotenv()
 
-def advanced_spell_check(text):
-    tool = LanguageTool('en-US')
-    corrected = tool.correct(text)
-    return corrected
+def spell_check(text, spell):
+    words = re.findall(r'\b\w+\b', text)  # Split into words while ignoring punctuation
+    corrected_words = []
+    
+    for word in words:
+        # Ignore numbers
+        if word.isdigit():
+            corrected_words.append(word)
+        # Check and correct spelling
+        elif word not in spell:
+            corrected_words.append(spell.correction(word) or word)  # Keep the word if no correction is found
+        else:
+            corrected_words.append(word)
+            
+    if len(corrected_words) > 0:
+        return " ".join(corrected_words)
+    else:
+        return ""
 
 def search_videos(company_name):
     params = {
@@ -29,7 +43,7 @@ def search_videos(company_name):
     results = search.get_dict()
     return results["video_results"]
 
-def download_yt_transcript(video_id):
+def download_yt_transcript(video_id, spell):
     try:
         # Attempt to get the English transcript
         final_transcript = YouTubeTranscriptApi.get_transcript(video_id, languages=['en'])
@@ -58,7 +72,8 @@ def download_yt_transcript(video_id):
         print(f"segment : {segment}")
         # Spell check the text
 
-        corrected_text = advanced_spell_check(segment["text"])  # Corrected text
+        corrected_text = spell_check(segment["text"], spell)  # Corrected text
+        print(f"corrected text is {corrected_text}")
 
         srt_transcript += str(segment["start"]) + " sec : " + corrected_text + "\n"
     
@@ -73,6 +88,13 @@ def download_yt_transcript(video_id):
 company_name = "zomato"
 videos = search_videos(company_name)
 
+# Initialize the spell checker
+spell = SpellChecker()
+
+# Add custom words to the dictionary
+custom_words = {company_name, "blinkit", "swiggy", "zepto"}
+spell.word_frequency.load_words(custom_words)
+
 for i in range(len(videos)):
 
     print(f"Title : {videos[i]['title']}")
@@ -81,4 +103,4 @@ for i in range(len(videos)):
     if "www.youtube.com" in videos[i]["link"]:
         video_id = videos[i]["link"].split("=")[-1]
         print(f"Video_id is {video_id}")
-        download_yt_transcript(video_id)
+        download_yt_transcript(video_id, spell)
