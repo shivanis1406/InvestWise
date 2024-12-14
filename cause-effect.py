@@ -5,6 +5,9 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from utils import extract_texts_concurrently, search_news
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class EffectMapGenerator:
     def __init__(self):
@@ -34,7 +37,7 @@ class EffectMapGenerator:
                         },
                         {
                             "role": "user", 
-                            "content": f"Analyze the following news event and provide:\n1. Whether the impact is positive or negative on company {company_name}(use 😊 or 😔).\n2. Short and crisp answer for How this event impacts the company {company_name}.\n3. Short and crisp answer for Why this event impacts the company {company_name}.\nEvent Title: {title}\nEvent Summary: {text}"
+                            "content": f"Analyze the following news event and provide:\n1. Whether the impact is positive, negative, or neutral on company {company_name} (use 😊, 😔, or 😐).\n2. Short and crisp answer for How this event impacts the company {company_name}.\n3. Short and crisp answer for Why this event impacts the company {company_name}.\nLeave 'how' and 'why' blank if sentiment is neutral.\nEvent Title: {title}\nEvent Summary: {text}"
                         }
                     ],
                     response_format={
@@ -70,7 +73,7 @@ class EffectMapGenerator:
 
             print(f"raw_response : {raw_response}")
 
-            if "Error" not in raw_response and raw_response:
+            if "Error" not in raw_response and raw_response["emoji"] != "😐":
                 impacts.append({
                     "event": title,
                     "emoji": raw_response["emoji"],
