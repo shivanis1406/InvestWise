@@ -89,14 +89,12 @@ class EffectMapGenerator:
             sentiment_counts = {
                 "Positive": sum(1 for impact in impacts if impact['emoji'] == '😊'),
                 "Negative": sum(1 for impact in impacts if impact['emoji'] == '😔'),
-                "Neutral": sum(1 for impact in impacts if impact['emoji'] == '😐')
             }
             
             # Plot the sentiment distribution
             fig = px.pie(names=list(sentiment_counts.keys()), values=list(sentiment_counts.values()), 
                          title="Sentiment Distribution of News Events")
             st.plotly_chart(fig)
-
 
 
 def main():
@@ -232,7 +230,6 @@ def main():
             
             # Create and display effect map
             effect_map = generator.create_impact_summary(impacts)
-            st.pyplot(effect_map)
 
 if __name__ == "__main__":
     main()
