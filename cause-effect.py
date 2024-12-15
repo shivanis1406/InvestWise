@@ -116,11 +116,8 @@ def main():
 
     # Company input
     company_name = st.text_input("Enter Company Name", placeholder="e.g., Apple, Tesla")
-    
-    if st.button("Generate Effect Map") and company_name:
-        with st.spinner("Generating Effect Map..."):
-            
-            zomato_indirect_search_terms = [
+                
+    zomato_indirect_search_terms = [
     "urbanization impact on food delivery",
     "disposable income food delivery trends",
     "smartphone adoption food delivery",
@@ -145,9 +142,19 @@ def main():
     "discount wars food delivery profitability",
     "curfews impact food delivery services",
     "social media trends food delivery"
-]
+    ]
 
-            titles_links = search_news(zomato_indirect_search_terms)
+    # Multiple-selection menu for search terms
+    selected_terms = st.multiselect(
+        "Select search terms for news analysis:", 
+        options=zomato_indirect_search_terms,
+        default=zomato_indirect_search_terms[:3]  # Pre-select a few terms
+    )
+    
+    if st.button("Generate Effect Map") and company_name:
+        with st.spinner("Generating Effect Map..."):
+    
+            titles_links = search_news(selected_terms)
             #print(f"Titles & Links")
             #for k, v in titles_links.items():
             #    print(f"{k} : {v}")
