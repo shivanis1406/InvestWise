@@ -83,36 +83,36 @@ class EffectMapGenerator:
         
         return impacts
 
-def create_effect_map(self, impacts):
-    G = nx.DiGraph()
-    
-    # Add nodes with more sophisticated attributes
-    for impact in impacts:
-        node_color = 'green' if '😊' in impact['emoji'] else 'red' if '😔' in impact['emoji'] else 'gray'
-        node_size = 1000 if '😊' in impact['emoji'] or '😔' in impact['emoji'] else 500
+    def create_effect_map(self, impacts):
+        G = nx.DiGraph()
         
-        G.add_node(impact['event'], 
-                   sentiment=impact['emoji'], 
-                   how=impact['how'], 
-                   why=impact['why'],
-                   color=node_color,
-                   size=node_size)
-    
-    plt.figure(figsize=(15, 10))
-    pos = nx.kamada_kawai_layout(G)  # More aesthetically pleasing layout
-    
-    # Draw nodes with variable size and color
-    nx.draw_networkx_nodes(G, pos, 
-                           node_color=[node[1]['color'] for node in G.nodes(data=True)],
-                           node_size=[node[1]['size'] for node in G.nodes(data=True)],
-                           alpha=0.8)
-    nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True)
-    nx.draw_networkx_labels(G, pos, font_size=8, font_weight="bold")
-    
-    plt.title("Comprehensive Effect Map", fontsize=15, fontweight='bold')
-    plt.axis('off')
-    
-    return plt
+        # Add nodes with more sophisticated attributes
+        for impact in impacts:
+            node_color = 'green' if '😊' in impact['emoji'] else 'red' if '😔' in impact['emoji'] else 'gray'
+            node_size = 1000 if '😊' in impact['emoji'] or '😔' in impact['emoji'] else 500
+            
+            G.add_node(impact['event'], 
+                       sentiment=impact['emoji'], 
+                       how=impact['how'], 
+                       why=impact['why'],
+                       color=node_color,
+                       size=node_size)
+        
+        plt.figure(figsize=(15, 10))
+        pos = nx.kamada_kawai_layout(G)  # More aesthetically pleasing layout
+        
+        # Draw nodes with variable size and color
+        nx.draw_networkx_nodes(G, pos, 
+                               node_color=[node[1]['color'] for node in G.nodes(data=True)],
+                               node_size=[node[1]['size'] for node in G.nodes(data=True)],
+                               alpha=0.8)
+        nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True)
+        nx.draw_networkx_labels(G, pos, font_size=8, font_weight="bold")
+        
+        plt.title("Comprehensive Effect Map", fontsize=15, fontweight='bold')
+        plt.axis('off')
+        
+        return plt
 
 def main():
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
