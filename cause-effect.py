@@ -121,74 +121,31 @@ def main():
         with st.spinner("Generating Effect Map..."):
             
             zomato_indirect_search_terms = [
-            # Macro-Economic & Societal Trends
-            "Millennial eating habits",
-            "Gen Z dining preferences", 
-            "Work from home food consumption",
-            "Urban migration patterns",
-            "Middle-class disposable income trends",
-            "Startup employee lifestyle",
-
-            # Technology & Ecosystem
-            "Hyperlocal delivery innovations",
-            "Gig economy worker satisfaction", 
-            "Smartphone penetration rural India",
-            "Digital payment adoption",
-            "UPI transaction growth",
-            "Electric two-wheeler delivery",
-            "Battery swapping infrastructure",
-
-            # Geopolitical & Regulatory
-            "Startup visa regulations",
-            "Foreign investment in Indian startups",
-            "Cryptocurrency impact on digital transactions",
-            "Cross-border payment regulations", 
-            "Data localization laws",
-
-            # Climate & Sustainability
-            "Food packaging sustainability",
-            "Carbon footprint delivery services",
-            "Plant-based meat alternatives",
-            "Urban farming trends", 
-            "Cold chain logistics innovation",
-
-            # Consumer Psychology
-            "Social media food trends",
-            "Influencer dining recommendations",
-            "Hygiene perception restaurant delivery",
-            "Mental health workplace eating habits",
-            "Personalized nutrition trends",
-
-            # Infrastructure & Connectivity
-            "5G impact on delivery services",
-            "Internet penetration tier-2 cities", 
-            "Smart city digital infrastructure",
-            "Rural broadband expansion",
-
-            # Demographic Shifts
-            "Nuclear family growth",
-            "Single professional lifestyle",
-            "Women workforce participation", 
-            "Young professional migration",
-
-            # Health & Wellness
-            "Immunity-boosting food trends",
-            "Personalized diet plans",
-            "Mental health nutrition", 
-            "Fitness tracking food choices",
-
-            # Entertainment & Lifestyle
-            "OTT platform viewing habits",
-            "Gaming community food preferences",
-            "Weekend entertainment spending", 
-            "Co-living space meal patterns",
-
-            # Global Trend Crossovers
-            "K-pop food culture",
-            "International cuisine popularity", 
-            "Global food delivery models",
-            "Fusion cuisine trends"
-        ]
+    "urbanization impact on food delivery",
+    "disposable income food delivery trends",
+    "smartphone adoption food delivery",
+    "internet penetration food delivery growth",
+    "food delivery promotional campaigns",
+    "tier 2 city food delivery expansion",
+    "sustainable packaging food delivery",
+    "logistics technology advancements food delivery",
+    "cloud kitchen business model",
+    "healthy food demand delivery",
+    "local store partnerships quick commerce",
+    "10-minute delivery model",
+    "fuel prices food delivery costs",
+    "food delivery market competition",
+    "food safety regulations delivery",
+    "gig worker protests food delivery",
+    "economic slowdown food delivery impact",
+    "environmental concerns food delivery",
+    "delivery delays customer complaints",
+    "adverse weather food delivery disruptions",
+    "pandemic restrictions food delivery",
+    "discount wars food delivery profitability",
+    "curfews impact food delivery services",
+    "social media trends food delivery"
+]
 
             titles_links = search_news(zomato_indirect_search_terms)
             #print(f"Titles & Links")
