@@ -5,3 +5,4 @@ matplotlib
 google-search-results
 newspaper3k
 lxml-html-clean
+wordcloud
