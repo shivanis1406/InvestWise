@@ -3,3 +3,4 @@ python-dotenv
 openai
 matplotlib
 google-search-results
+newspaper3k
