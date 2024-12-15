@@ -242,7 +242,7 @@ def main():
                 st.markdown("---")
             
             # Create and display effect map
-            effect_map = generator.create_effect_map(impacts)
+            effect_map = generator.create_weighted_word_cloud(impacts)
             st.pyplot(effect_map)
 
 if __name__ == "__main__":
