@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from utils import extract_texts_concurrently, search_news
 from openai import OpenAI
 from dotenv import load_dotenv
+from wordcloud import WordCloud
 
 load_dotenv()
 
@@ -13,7 +14,7 @@ class EffectMapGenerator:
     def __init__(self):
         pass
 
-    def analyze_news_impact(self, client, company_name, news_items):
+    def analyze_news_impact(self, client, company_name, company_info, news_items):
         """
         Analyze news items and generate impact assessments
         Note: This is a simplified version. In real-world, 
@@ -37,7 +38,7 @@ class EffectMapGenerator:
                         },
                         {
                             "role": "user", 
-                            "content": f"Analyze the following news event and provide:\n1. Whether the impact is positive, negative, or neutral on company {company_name} (use 😊, 😔, or 😐).\n2. Short and crisp answer for How this event impacts the company {company_name}.\n3. Short and crisp answer for Why this event impacts the company {company_name}.\nLeave 'how' and 'why' blank if sentiment is neutral.\nEvent Title: {title}\nEvent Summary: {text}"
+                            "content": f"Analyze the following news event and provide the impact on company {company_name} :\n1. Whether the impact is positive, negative, or neutral (use 😊, 😔, or 😐).\n2. Short and crisp answer for How this event impacts the company.\n3. Short and crisp answer for Why this event impacts the company.\nLeave 'how' and 'why' blank if sentiment is neutral.\nEvent Title: {title}\nEvent Summary: {text}. Few lines about the {company_name} - {company_info}"
                         }
                     ],
                     response_format={
@@ -83,36 +84,31 @@ class EffectMapGenerator:
         
         return impacts
 
-    def create_effect_map(self, impacts):
-        G = nx.DiGraph()
+    def create_weighted_word_cloud(self, impacts):
+        # Create a dictionary of word frequencies
+        word_freq = {}
         
-        # Add nodes with more sophisticated attributes
+        # Iterate over the impacts and extract words from 'how' descriptions
         for impact in impacts:
-            node_color = 'green' if '😊' in impact['emoji'] else 'red' if '😔' in impact['emoji'] else 'gray'
-            node_size = 1000 if '😊' in impact['emoji'] or '😔' in impact['emoji'] else 500
-            
-            G.add_node(impact['event'], 
-                       sentiment=impact['emoji'], 
-                       how=impact['how'], 
-                       why=impact['why'],
-                       color=node_color,
-                       size=node_size)
+            if impact['how']:  # Ensure 'how' is not empty
+                words = impact['how'].split()  # Split by spaces to get individual words
+                for word in words:
+                    word = word.lower()  # Normalize to lowercase
+                    if word not in word_freq:
+                        word_freq[word] = 1
+                    else:
+                        word_freq[word] += 1
         
-        plt.figure(figsize=(15, 10))
-        pos = nx.kamada_kawai_layout(G)  # More aesthetically pleasing layout
+        # Now, generate the word cloud using the frequency of words
+        wordcloud = WordCloud(width=800, height=400, background_color='white', 
+                               relative_scaling=0.5, max_font_size=100).generate_from_frequencies(word_freq)
         
-        # Draw nodes with variable size and color
-        nx.draw_networkx_nodes(G, pos, 
-                               node_color=[node[1]['color'] for node in G.nodes(data=True)],
-                               node_size=[node[1]['size'] for node in G.nodes(data=True)],
-                               alpha=0.8)
-        nx.draw_networkx_edges(G, pos, edge_color='gray', arrows=True)
-        nx.draw_networkx_labels(G, pos, font_size=8, font_weight="bold")
-        
-        plt.title("Comprehensive Effect Map", fontsize=15, fontweight='bold')
+        # Plotting the word cloud
+        plt.figure(figsize=(10, 6))
+        plt.imshow(wordcloud, interpolation='bilinear')
         plt.axis('off')
-        
-        return plt
+        st.pyplot(plt)
+
 
 def main():
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -128,7 +124,7 @@ def main():
         unsafe_allow_html=True
     )
     # Company input
-    company_name = st.text_input("Enter Company Name", placeholder="e.g., Apple, Tesla")
+    company_name = st.text_input("Enter Company Name", placeholder="e.g., Zomato, Swiggy")
                 
     zomato_indirect_search_terms = [
     "urbanization impact on food delivery",
@@ -154,17 +150,66 @@ def main():
     "pandemic restrictions food delivery",
     "discount wars food delivery profitability",
     "curfews impact food delivery services",
-    "social media trends food delivery"
-    ]
-
+    "social media trends food delivery",
+    "last-mile delivery innovations in food delivery",
+    "impact of AI on food delivery services",
+    "food delivery competition among startups",
+    "growth of dark kitchens in food delivery",
+    "delivery management software for food delivery",
+    "consumer preferences in food delivery services",
+    "food delivery pricing models",
+    "food delivery subscription services",
+    "impact of subscription models in grocery delivery",
+    "mobile app usage trends in food delivery",
+    "delivery tracking technology food industry",
+    "consumer behavior changes in grocery delivery",
+    "food delivery logistics optimization",
+    "supply chain challenges in food delivery",
+    "sustainability in food delivery packaging",
+    "grocery delivery market trends",
+    "e-commerce impact on grocery delivery services",
+    "delivery efficiency in quick-commerce",
+    "grocery delivery in rural areas",
+    "crowdsourced delivery for grocery services",
+    "on-demand grocery delivery model",
+    "grocery delivery service regulations",
+    "cloud-based solutions for grocery delivery",
+    "AI-powered recommendations in grocery delivery",
+    "environmental impact of grocery delivery services",
+    "delivery service fees in food delivery",
+    "partnering with local grocery stores for quick-commerce",
+    "consumer adoption of 10-minute grocery delivery",
+    "food delivery services during holidays",
+    "impact of food delivery on traditional retail",
+    "smart packaging in grocery deliveries",
+    "predictive analytics in grocery delivery",
+    "supply chain innovations in quick-commerce",
+    "cross-border food delivery trends",
+    "crowdshipping for food delivery",
+    "impact of vehicle electrification on food delivery",
+    "changing demographics of food delivery customers",
+    "driverless delivery technology in quick-commerce"
+]
     # Multiple-selection menu for search terms
     selected_terms = st.multiselect(
         "Select search terms for news analysis:", 
         options=zomato_indirect_search_terms,
         default=zomato_indirect_search_terms[:3]  # Pre-select a few terms
     )
+    company_info = ""
     
-    if st.button("Generate Effect Map") and company_name:
+    if company_name.lower() == "zomato":
+        company_info = "Zomato is an Indian multinational restaurant aggregator and food delivery service founded in 2008. It provides users with information about restaurants, including menus and user reviews, while facilitating food delivery from partner restaurants across over 1,000 cities. Zomato operates several business models, including an aggregator model that lists restaurants, a delivery service for partners, and a subscription service called Zomato Gold that offers exclusive deals to users. Recently, Zomato has expanded into quick commerce with its acquisition of Blinkit, aiming to deliver groceries and essentials rapidly through a network of dark stores."
+    elif company_name.lower() == "swiggy":
+        company_info = "Swiggy is another leading food delivery platform in India, launched in 2014. It offers a wide range of services including food delivery from local restaurants, grocery delivery through its Instamart service, and a cloud kitchen model that allows restaurants to operate without physical dining spaces. Swiggy has focused on enhancing user experience through features like real-time tracking of orders and a diverse menu selection. The company has also ventured into quick commerce, competing closely with Zomato's Blinkit by leveraging its extensive logistics network to ensure fast deliveries."
+    elif company_name.lower() == "zepto":
+        company_info = "Zepto is a relatively new entrant in the quick commerce market, founded in 2021. It specializes in delivering groceries and essentials within a rapid timeframe, typically under 10 minutes. Zepto operates through a network of dark stores strategically located to optimize delivery efficiency. Despite being smaller than Zomato and Swiggy, Zepto has quickly gained market share by focusing on speed and convenience. The company aims to expand its store count significantly in the coming years to enhance its service capabilities."
+    elif company_name.lower() == "bigbasket":
+        company_info = "BigBasket is a leading online grocery delivery service in India, established in 2011. It operates an e-commerce platform that connects consumers with a vast network of local and regional grocery suppliers. Customers can browse and purchase a wide range of products, including fresh produce, dairy, and packaged goods, through its user-friendly website and mobile app. BigBasket has also introduced subscription models like BB Star for loyal customers, offering benefits such as free delivery and exclusive discounts. The company emphasizes efficient supply chain management and technology to ensure timely deliveries, including express options that promise delivery within 90 minutes in major cities, thus reshaping the grocery shopping experience in India."
+    else:
+        pass
+        
+    if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
     
             titles_links = search_news(selected_terms)
@@ -186,7 +231,7 @@ def main():
             
             # Analyze news impacts
             generator = EffectMapGenerator()
-            impacts = generator.analyze_news_impact(client, company_name, extracted_texts)
+            impacts = generator.analyze_news_impact(client, company_name, company_info, extracted_texts)
             
             # Display impacts
             st.subheader("News Impacts")
