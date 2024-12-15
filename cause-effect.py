@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from utils import extract_texts_concurrently, search_news
 from openai import OpenAI
 from dotenv import load_dotenv
-from wordcloud import WordCloud
+import plotly.express as px
 
 load_dotenv()
 
@@ -84,30 +84,19 @@ class EffectMapGenerator:
         
         return impacts
 
-    def create_weighted_word_cloud(self, impacts):
-        # Create a dictionary of word frequencies
-        word_freq = {}
-        
-        # Iterate over the impacts and extract words from 'how' descriptions
-        for impact in impacts:
-            if impact['how']:  # Ensure 'how' is not empty
-                words = impact['how'].split()  # Split by spaces to get individual words
-                for word in words:
-                    word = word.lower()  # Normalize to lowercase
-                    if word not in word_freq:
-                        word_freq[word] = 1
-                    else:
-                        word_freq[word] += 1
-        
-        # Now, generate the word cloud using the frequency of words
-        wordcloud = WordCloud(width=800, height=400, background_color='white', 
-                               relative_scaling=0.5, max_font_size=100).generate_from_frequencies(word_freq)
-        
-        # Plotting the word cloud
-        plt.figure(figsize=(10, 6))
-        plt.imshow(wordcloud, interpolation='bilinear')
-        plt.axis('off')
-        st.pyplot(plt)
+    def create_impact_summary(self, impacts):
+            # Count number of positive, negative, and neutral impacts
+            sentiment_counts = {
+                "Positive": sum(1 for impact in impacts if impact['emoji'] == '😊'),
+                "Negative": sum(1 for impact in impacts if impact['emoji'] == '😔'),
+                "Neutral": sum(1 for impact in impacts if impact['emoji'] == '😐')
+            }
+            
+            # Plot the sentiment distribution
+            fig = px.pie(names=list(sentiment_counts.keys()), values=list(sentiment_counts.values()), 
+                         title="Sentiment Distribution of News Events")
+            st.plotly_chart(fig)
+
 
 
 def main():
@@ -242,7 +231,7 @@ def main():
                 st.markdown("---")
             
             # Create and display effect map
-            effect_map = generator.create_weighted_word_cloud(impacts)
+            effect_map = generator.create_impact_summary(impacts)
             st.pyplot(effect_map)
 
 if __name__ == "__main__":
