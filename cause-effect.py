@@ -179,7 +179,7 @@ def main():
 ]
     # Multiple-selection menu for search terms
     selected_terms = st.multiselect(
-        "Select search terms for news analysis:", 
+        "Select key indicators for analysis:", 
         options=zomato_indirect_search_terms,
         default=zomato_indirect_search_terms[:3]  # Pre-select a few terms
     )
