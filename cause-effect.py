@@ -112,8 +112,16 @@ class EffectMapGenerator:
 def main():
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    st.title("Company Effect Map Generator 📊")
-
+    # Title of the application
+    st.title("SectorPulse 📈📰💼")
+    
+    # Tagline with formatting
+    st.markdown(
+        """
+        **Your compass to sector trends and company impacts!**
+        """,
+        unsafe_allow_html=True
+    )
     # Company input
     company_name = st.text_input("Enter Company Name", placeholder="e.g., Apple, Tesla")
                 
