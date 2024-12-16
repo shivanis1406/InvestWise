@@ -11,8 +11,8 @@ import time
 from pymongo import MongoClient
 
 load_dotenv()
-username = os.getenv('ROOT')
-password = os.getenv('PASSWORD')
+username = os.getenv('MONGODB_USERNAME')
+password = os.getenv('MONGODB_PASSWORD')
 
 # MongoDB connection URI
 MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bkywn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
