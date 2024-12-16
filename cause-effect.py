@@ -19,6 +19,13 @@ MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bkywn.mongodb.net/?re
 
 # Connect to MongoDB
 client = MongoClient(MONGO_URI)
+# Check connection
+try:
+    client.server_info()  # Will raise an exception if unable to connect
+    print("Connection successful!")
+except errors.ServerSelectionTimeoutError as err:
+    print(f"Connection failed to {MONGO_URI}: {err}")
+    
 db = client['news_database']  # Database name
 collection = db['titles_links']  # Collection name
 
