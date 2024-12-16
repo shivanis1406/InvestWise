@@ -1,5 +1,16 @@
 from transformers import BertTokenizer, BertModel
 import torch
+import requests
+import json, os
+from serpapi import GoogleSearch
+from dotenv import load_dotenv
+from newspaper import Article
+
+load_dotenv()
+
+#from bs4 import BeautifulSoup
+import concurrent.futures
+from typing import Dict, List
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertModel.from_pretrained("bert-base-uncased")
@@ -45,18 +56,6 @@ def generate_embeddings(text):
 
         sentence_embedding = last_hidden_states.mean(dim=1)  # Shape: [1, hidden_size]
         return sentence_embedding
-
-import requests
-import json, os
-from serpapi import GoogleSearch
-from dotenv import load_dotenv
-from newspaper import Article
-
-load_dotenv()
-
-#from bs4 import BeautifulSoup
-import concurrent.futures
-from typing import Dict, List
 
 def extract_texts_concurrently(titles_links: Dict[str, str]) -> Dict[str, str]: 
     def extract_article_text_newspaper3k(url: str) -> tuple:
