@@ -157,8 +157,7 @@ def main(scrape_news):
     zomato_indirect_search_terms = [
     "urbanization impact on food delivery",
     "disposable income food delivery trends",
-    "smartphone adoption food delivery",
-    "internet penetration food delivery growth",
+    "internet penetration",
     "food delivery promotional campaigns",
     "tier 2 city food delivery expansion",
     "sustainable packaging food delivery",
@@ -177,10 +176,7 @@ def main(scrape_news):
     "adverse weather food delivery disruptions",
     "discount wars food delivery profitability",
     "curfews impact food delivery services",
-    "social media trends food delivery",
     "last-mile delivery innovations in food delivery",
-    "impact of AI on food delivery services",
-    "food delivery competition among startups",
     "growth of dark kitchens in food delivery",
     "delivery management software for food delivery",
     "consumer preferences in food delivery services",
@@ -214,9 +210,8 @@ def main(scrape_news):
     "cross-border food delivery trends",
     "crowdshipping for food delivery",
     "impact of vehicle electrification on food delivery",
-    "changing demographics of food delivery customers",
-    "driverless delivery technology in quick-commerce"
-]
+    "changing demographics of food delivery customers"
+    ]
     #zomato_indirect_search_terms = ["driverless delivery technology in quick-commerce"]
                                     
     # Multiple-selection menu for search terms
@@ -253,7 +248,8 @@ def main(scrape_news):
                 start_time = 0
                 titles_links = {}
         
-            if time.time() - start_time > 4 * 60 * 60 or start_time == 0 or scrape_news == 1:  # 4 hours
+            #if time.time() - start_time > 4 * 60 * 60 or start_time == 0 or scrape_news == 1:  # 4 hours
+            if start_time == 0 or scrape_news == 1:  # 4 hours
                 st.write("📰 Stay updated with the latest news! This app scrapes fresh news every 4 hours. ⏳ Since it's been more than 4 hours since the last update, we're fetching the newest headlines for you now! 🚀")
                 # Find the latest news
                 titles_links = search_news(zomato_indirect_search_terms)
