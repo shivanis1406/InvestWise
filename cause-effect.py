@@ -208,7 +208,7 @@ def main():
                 titles_links_time = {}
                 start_time = 0
                 
-            if titles_links_time and time.time() - start_time > 4 * 60 * 60: #4 mins
+            if time.time() - start_time > 4 * 60 * 60 or not os.path.exists('titles_links_time.txt'): #4 mins
                 #Find latest news 
                 titles_links = search_news(zomato_indirect_search_terms)
                 #Write titles_links json to file
