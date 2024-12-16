@@ -57,46 +57,56 @@ def generate_embeddings(text):
         sentence_embedding = last_hidden_states.mean(dim=1)  # Shape: [1, hidden_size]
         return sentence_embedding
 
-def extract_texts_concurrently(titles_links: Dict[str, str]) -> Dict[str, str]: 
+def calc_cosine_similarity(text: str, term: str) -> bool:
+    # Placeholder function for calculating cosine similarity.
+    # Replace with your actual implementation.
+    return True  # Assuming all texts are relevant for demonstration purposes.
+
+def extract_texts_concurrently(titles_links: Dict[str, Dict[str, str]]) -> Dict[str, Dict[str, Dict[str, str]]]:
     def extract_article_text_newspaper3k(url: str) -> tuple:
-        print(f"URL is {url}")
+        print(f"Processing URL: {url}")
         article = Article(url)
         try:
             article.download()
         except Exception as e:
-            print(f"Error during download : {e}")
+            print(f"Error during download: {e}")
             return (url, "")
         try:
             article.parse()
         except Exception as e:
-            print(f"Error during parsing : {e}")
+            print(f"Error during parsing: {e}")
             return (url, "")
         article_text = article.text
-        #print(f"Text is {article_text}")
-        #title = article.title
-
-        # Explore these later
-        #article.nlp()
-        #article.keywords
-        #article.summary
         return (url, article_text)
 
-    # Use ThreadPoolExecutor for concurrent text extraction
     results = {}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        # Create futures for each URL
-        futures = {
-            executor.submit(extract_article_text_newspaper3k, url): title 
-            for title, url in titles_links.items()
-        }
-        
-        # Collect results as they complete
-        for future in concurrent.futures.as_completed(futures):
-            title = futures[future]
-            url, text = future.result()
-            results[title] = {url:text}
-    
-    return results
+
+    for term, links in titles_links.items():
+        print(f"Processing term: {term}")
+        term_results = {}
+
+        # Use ThreadPoolExecutor for concurrent text extraction
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            # Create futures for each URL
+            futures = {
+                executor.submit(extract_article_text_newspaper3k, url): title 
+                for title, url in links.items()
+            }
+
+            # Collect results as they complete
+            for future in concurrent.futures.as_completed(futures):
+                title = futures[future]
+                try:
+                    url, text = future.result()
+                    text_is_relevant = calc_cosine_similarity(text, term)
+                    if text_is_relevant:
+                        term_results[title] = {url: text}
+                except Exception as e:
+                    print(f"Error processing {title}: {e}")
+
+        results[term] = term_results
+    print(f"type of results.values() is {type(results.values()}")
+    return results.values()
 
 def isValidNews(url):
     if "livemint.com" in url or "outlookbusiness.com" in url or "businesstoday.com" in url or "financialexpress.com" in url or "reuters.com" in url or "indiatoday.in" in url or "economictimes.indiatimes.com" in url or "techcrunch.com" in url:
@@ -114,7 +124,7 @@ def extract_titles_links(news_list, term):
         else:
             if isValidNews(item["link"]):
                 titles_links.update({item["title"] : item["link"]})
-    return {"term" : titles_links}
+    return {term : titles_links}
 
 def search_news(search_terms):
     titles_links = {}
