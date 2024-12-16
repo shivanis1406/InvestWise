@@ -132,7 +132,7 @@ class EffectMapGenerator:
             st.plotly_chart(fig)
 
 
-def main():
+def main(scrape_news):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     # Title of the application
@@ -217,7 +217,7 @@ def main():
     "changing demographics of food delivery customers",
     "driverless delivery technology in quick-commerce"
 ]
-    zomato_indirect_search_terms = ["driverless delivery technology in quick-commerce"]
+    #zomato_indirect_search_terms = ["driverless delivery technology in quick-commerce"]
                                     
     # Multiple-selection menu for search terms
     selected_terms = st.multiselect(
@@ -253,7 +253,8 @@ def main():
                 start_time = 0
                 titles_links = {}
         
-            if time.time() - start_time > 4 * 60 * 60 or start_time == 0:  # 4 hours
+            if time.time() - start_time > 4 * 60 * 60 or start_time == 0 or scrape_news = 1:  # 4 hours
+                st.write("📰 Stay updated with the latest news! This app scrapes fresh news every 4 hours. ⏳ Since it's been more than 4 hours since the last update, we're fetching the newest headlines for you now! 🚀")
                 # Find the latest news
                 titles_links = search_news(zomato_indirect_search_terms)
                 
@@ -298,4 +299,5 @@ def main():
             effect_map = generator.create_impact_summary(impacts)
 
 if __name__ == "__main__":
-    main()
+    scrape_news = 1
+    main(scrape_news)
