@@ -253,7 +253,7 @@ def main(scrape_news):
                 start_time = 0
                 titles_links = {}
         
-            if time.time() - start_time > 4 * 60 * 60 or start_time == 0 or scrape_news = 1:  # 4 hours
+            if time.time() - start_time > 4 * 60 * 60 or start_time == 0 or scrape_news == 1:  # 4 hours
                 st.write("📰 Stay updated with the latest news! This app scrapes fresh news every 4 hours. ⏳ Since it's been more than 4 hours since the last update, we're fetching the newest headlines for you now! 🚀")
                 # Find the latest news
                 titles_links = search_news(zomato_indirect_search_terms)
