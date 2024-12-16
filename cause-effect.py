@@ -8,9 +8,38 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import plotly.express as px
 import time
+from pymongo import MongoClient
 
 load_dotenv()
+username = os.getenv('ROOT')
+password = os.getenv('PASSWORD')
 
+# MongoDB connection URI
+MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.bkywn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+
+# Connect to MongoDB
+client = MongoClient(MONGO_URI)
+db = client['news_database']  # Database name
+collection = db['titles_links']  # Collection name
+
+# Mock function to search news (replace with actual implementation)
+def search_news(search_terms):
+    return [{"title": "Sample News", "link": "https://example.com/news", "time": time.time()}]
+
+# Function to save to MongoDB
+def save_to_mongodb(titles_links):
+    # Replace the existing document with a new one
+    collection.replace_one(
+        {"_id": "titles_links_time"},  # Identify the document by _id
+        {"_id": "titles_links_time", "titles_links": titles_links, "time": time.time()},  # New document
+        upsert=True  # Ensure the document is created if it doesn't exist
+    )
+
+# Function to read from MongoDB
+def read_from_mongodb():
+    document = collection.find_one({"_id": "titles_links_time"})
+    return document
+    
 class EffectMapGenerator:
     def __init__(self):
         pass
@@ -183,6 +212,8 @@ def main():
     "changing demographics of food delivery customers",
     "driverless delivery technology in quick-commerce"
 ]
+    zomato_indirect_search_terms = ["driverless delivery technology in quick-commerce"]
+                                    
     # Multiple-selection menu for search terms
     selected_terms = st.multiselect(
         "Select key indicators for analysis:", 
@@ -200,23 +231,33 @@ def main():
         
     if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
-            try:
-                titles_links_time = json.loads(open('titles_links_time.txt').read())
-            
-                start_time = titles_links_time["time"]
-            except:
-                titles_links_time = {}
-                start_time = 0
-                
-            if time.time() - start_time > 4 * 60 * 60 or not os.path.exists('titles_links_time.txt'): #4 mins
-                #Find latest news 
-                titles_links = search_news(zomato_indirect_search_terms)
-                #Write titles_links json to file
-                with open('titles_links_time.txt', 'w') as f:
-                    json.dump({"titles_links": titles_links, "time": time.time()}, f)
+        # Main logic
+        try:
+            # Read from MongoDB
+            document = read_from_mongodb()
+            if document:
+                start_time = document["time"]
+                titles_links = document["titles_links"]
             else:
-                print(f"Time elapsed : {time.time() - start_time} secs")
-                titles_links = titles_links_time["titles_links"]
+                start_time = 0
+                titles_links = {}
+        except Exception as e:
+            print(f"Error reading from MongoDB: {e}")
+            start_time = 0
+            titles_links = {}
+        
+        if time.time() - start_time > 4 * 60 * 60 or start_time == 0:  # 4 hours
+            # Find the latest news
+            titles_links = search_news(zomato_indirect_search_terms)
+            
+            # Save to MongoDB
+            save_to_mongodb(titles_links)
+            print("Data saved to MongoDB.")
+        else:
+            print(f"Time elapsed: {time.time() - start_time} secs")
+            print("Using cached data from MongoDB.")
+        
+            print("Titles and links:", titles_links)
                 
             for topic in selected_terms:
                 selected_titles_links = titles_links[topic]
