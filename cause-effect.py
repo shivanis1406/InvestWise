@@ -29,9 +29,6 @@ except Exception as err:
 db = client['news_database']  # Database name
 collection = db['titles_links']  # Collection name
 
-# Mock function to search news (replace with actual implementation)
-def search_news(search_terms):
-    return [{"title": "Sample News", "link": "https://example.com/news", "time": time.time()}]
 
 # Function to save to MongoDB
 def save_to_mongodb(titles_links):
