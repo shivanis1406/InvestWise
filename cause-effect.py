@@ -259,16 +259,16 @@ def main():
                 
                 # Save to MongoDB
                 save_to_mongodb(titles_links)
-                print("Data saved to MongoDB.")
+                print(f"Data saved to MongoDB : {titles_links}")
             else:
                 print(f"Time elapsed: {time.time() - start_time} secs")
                 print("Using cached data from MongoDB.")
                 titles_links = read_from_mongodb()
                 print("Titles and links:", titles_links)
 
-                selected_titles_links = {}
-                for topic in selected_terms:
-                    selected_titles_links.update({topic : titles_links[topic]})
+            selected_titles_links = {}
+            for topic in selected_terms:
+                selected_titles_links.update({topic : titles_links[topic]})
             
             # Extract texts
             extracted_texts = extract_texts_concurrently(selected_titles_links)
