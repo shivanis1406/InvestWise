@@ -237,6 +237,8 @@ def main():
     if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
             # Main logic
+            titles_links = {}
+            start_time = 0
             try:
                 # Read from MongoDB
                 document = read_from_mongodb()
@@ -261,7 +263,6 @@ def main():
             else:
                 print(f"Time elapsed: {time.time() - start_time} secs")
                 print("Using cached data from MongoDB.")
-                titles_links = read_from_mongodb()
                 print("Titles and links:", titles_links)
 
             selected_titles_links = {}
