@@ -105,8 +105,8 @@ def extract_texts_concurrently(titles_links: Dict[str, Dict[str, str]]) -> Dict[
                     print(f"Error processing {title}: {e}")
 
         results[term] = term_results
-    print(f"type of results.values() is {type(results.values())}")
-    return results.values()
+    print(f"type of results.values() is {type(list(results.values())[0])}")
+    return list(results.values())[0]
 
 def isValidNews(url):
     if "livemint.com" in url or "outlookbusiness.com" in url or "businesstoday.com" in url or "financialexpress.com" in url or "reuters.com" in url or "indiatoday.in" in url or "economictimes.indiatimes.com" in url or "techcrunch.com" in url:
