@@ -138,7 +138,7 @@ def search_news(search_terms):
         "engine": "google_news",
         "gl": "in",
         "hl": "en",
-        "num": 2
+        "num": 5
         }
 
         search = GoogleSearch(params)
