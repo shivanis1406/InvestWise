@@ -115,7 +115,7 @@ def main():
     # Company selection dropdown
     company_name = st.selectbox(
         "Select a Company:",
-        options=["Zomato", "Swiggy", "BigBasket"],
+        options=["Zomato", "Swiggy"],
         index=0
     )
     
