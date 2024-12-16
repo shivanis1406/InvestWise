@@ -7,6 +7,7 @@ from utils import extract_texts_concurrently, search_news
 from openai import OpenAI
 from dotenv import load_dotenv
 import plotly.express as px
+import time
 
 load_dotenv()
 
@@ -194,28 +195,35 @@ def main():
         company_info = "Zomato is an Indian multinational restaurant aggregator and food delivery service founded in 2008. It provides users with information about restaurants, including menus and user reviews, while facilitating food delivery from partner restaurants across over 1,000 cities. Zomato operates several business models, including an aggregator model that lists restaurants, a delivery service for partners, and a subscription service called Zomato Gold that offers exclusive deals to users. Recently, Zomato has expanded into quick commerce with its acquisition of Blinkit, aiming to deliver groceries and essentials rapidly through a network of dark stores."
     elif company_name.lower() == "swiggy":
         company_info = "Swiggy is another leading food delivery platform in India, launched in 2014. It offers a wide range of services including food delivery from local restaurants, grocery delivery through its Instamart service, and a cloud kitchen model that allows restaurants to operate without physical dining spaces. Swiggy has focused on enhancing user experience through features like real-time tracking of orders and a diverse menu selection. The company has also ventured into quick commerce, competing closely with Zomato's Blinkit by leveraging its extensive logistics network to ensure fast deliveries."
-    elif company_name.lower() == "zepto":
-        company_info = "Zepto is a relatively new entrant in the quick commerce market, founded in 2021. It specializes in delivering groceries and essentials within a rapid timeframe, typically under 10 minutes. Zepto operates through a network of dark stores strategically located to optimize delivery efficiency. Despite being smaller than Zomato and Swiggy, Zepto has quickly gained market share by focusing on speed and convenience. The company aims to expand its store count significantly in the coming years to enhance its service capabilities."
-    elif company_name.lower() == "bigbasket":
-        company_info = "BigBasket is a leading online grocery delivery service in India, established in 2011. It operates an e-commerce platform that connects consumers with a vast network of local and regional grocery suppliers. Customers can browse and purchase a wide range of products, including fresh produce, dairy, and packaged goods, through its user-friendly website and mobile app. BigBasket has also introduced subscription models like BB Star for loyal customers, offering benefits such as free delivery and exclusive discounts. The company emphasizes efficient supply chain management and technology to ensure timely deliveries, including express options that promise delivery within 90 minutes in major cities, thus reshaping the grocery shopping experience in India."
     else:
         pass
         
     if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
-    
-            titles_links = search_news(selected_terms)
-            #print(f"Titles & Links")
-            #for k, v in titles_links.items():
-            #    print(f"{k} : {v}")
-
+            titles_links_time = json.loads(open('titles_links_time.txt').read())
+            
+            start_time = titles_links_time["time"]
+            if time.time() - start_time > 4 * 60 * 60: #4 mins
+                #Find latest news 
+                titles_links = search_news(zomato_indirect_search_terms)
+                #Write titles_links json to file
+                with open('titles_links_time.txt', 'w') as f:
+                    json.dump({"titles_links": titles_links, "time": time.time()}, f)
+            else:
+                print(f"Time elapsed : {time.time() - start_time} secs")
+                titles_links = titles_links_time["titles_links"]
+                
+            for topic in selected_terms:
+                selected_titles_links = titles_links[topic]
+            
             # Extract texts
-            extracted_texts = extract_texts_concurrently(titles_links)
+            extracted_texts = extract_texts_concurrently(selected_titles_links)
+            
             # Print results
             for title, url_text in extracted_texts.items():
                 print(f"Title: {title}")
                 print(f"URL: {list(url_text.keys())[0]}")
-                print(f"Text: {list(url_text.values())[0][:500]}...\n")  # Print first 500 characters
+                #print(f"Text: {list(url_text.values())[0][:500]}...\n")  # Print first 500 characters
 
             if not extracted_texts:
                 st.warning("No news found. Try a different company name.")
