@@ -105,7 +105,7 @@ def isValidNews(url):
     else:
         return False 
     
-def extract_titles_links(news_list):
+def extract_titles_links(news_list, term):
     titles_links = {}
     for item in news_list:
         if "stories" in item:
@@ -115,7 +115,7 @@ def extract_titles_links(news_list):
         else:
             if isValidNews(item["link"]):
                 titles_links.update({item["title"] : item["link"]})
-    return titles_links
+    return {"term" : titles_links}
 
 def search_news(search_terms):
     titles_links = {}
@@ -137,7 +137,7 @@ def search_news(search_terms):
         news_results = results["news_results"]
 
         # Check if the request was successful
-        titles_links.update(extract_titles_links(news_results))
+        titles_links.update(extract_titles_links(news_results, term))
 
     return titles_links
 
