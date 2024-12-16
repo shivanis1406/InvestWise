@@ -261,7 +261,7 @@ def main():
 
                 selected_titles_links = {}
                 for topic in selected_terms:
-                    selected_titles_links.update{topic : titles_links[topic]}
+                    selected_titles_links.update({topic : titles_links[topic]})
             
             # Extract texts
             extracted_texts = extract_texts_concurrently(selected_titles_links)
