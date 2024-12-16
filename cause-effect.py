@@ -200,10 +200,15 @@ def main():
         
     if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
-            titles_links_time = json.loads(open('titles_links_time.txt').read())
+            try:
+                titles_links_time = json.loads(open('titles_links_time.txt').read())
             
-            start_time = titles_links_time["time"]
-            if time.time() - start_time > 4 * 60 * 60: #4 mins
+                start_time = titles_links_time["time"]
+            except:
+                titles_links_time = {}
+                start_time = 0
+                
+            if titles_links_time and time.time() - start_time > 4 * 60 * 60: #4 mins
                 #Find latest news 
                 titles_links = search_news(zomato_indirect_search_terms)
                 #Write titles_links json to file
