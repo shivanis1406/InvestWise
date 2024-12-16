@@ -142,8 +142,14 @@ def search_news(search_terms):
         }
 
         search = GoogleSearch(params)
-        results = search.get_dict()
-        news_results = results["news_results"]
+        results = search.get_dict
+        print(f"keys for results : {results.keys()}")
+        
+        try:
+            news_results = results["news_results"]
+        except Exception as err:
+            print(f"Error while extracting news : {err}")
+            continue
 
         # Check if the request was successful
         titles_links.update(extract_titles_links(news_results, term))
