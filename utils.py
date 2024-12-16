@@ -143,7 +143,7 @@ def search_news(search_terms):
 
         search = GoogleSearch(params)
         results = search.get_dict()
-        print(f"keys for results : {results.keys()}")
+        print(f"keys for results : {results}")
         
         try:
             news_results = results["news_results"]
