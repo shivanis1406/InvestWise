@@ -231,36 +231,36 @@ def main():
         
     if st.button("Generate Effect Map") and company_info != "" and company_name:
         with st.spinner("Generating Effect Map..."):
-        # Main logic
-        try:
-            # Read from MongoDB
-            document = read_from_mongodb()
-            if document:
-                start_time = document["time"]
-                titles_links = document["titles_links"]
-            else:
+            # Main logic
+            try:
+                # Read from MongoDB
+                document = read_from_mongodb()
+                if document:
+                    start_time = document["time"]
+                    titles_links = document["titles_links"]
+                else:
+                    start_time = 0
+                    titles_links = {}
+            except Exception as e:
+                print(f"Error reading from MongoDB: {e}")
                 start_time = 0
                 titles_links = {}
-        except Exception as e:
-            print(f"Error reading from MongoDB: {e}")
-            start_time = 0
-            titles_links = {}
         
-        if time.time() - start_time > 4 * 60 * 60 or start_time == 0:  # 4 hours
-            # Find the latest news
-            titles_links = search_news(zomato_indirect_search_terms)
-            
-            # Save to MongoDB
-            save_to_mongodb(titles_links)
-            print("Data saved to MongoDB.")
-        else:
-            print(f"Time elapsed: {time.time() - start_time} secs")
-            print("Using cached data from MongoDB.")
-        
-            print("Titles and links:", titles_links)
+            if time.time() - start_time > 4 * 60 * 60 or start_time == 0:  # 4 hours
+                # Find the latest news
+                titles_links = search_news(zomato_indirect_search_terms)
                 
-            for topic in selected_terms:
-                selected_titles_links = titles_links[topic]
+                # Save to MongoDB
+                save_to_mongodb(titles_links)
+                print("Data saved to MongoDB.")
+            else:
+                print(f"Time elapsed: {time.time() - start_time} secs")
+                print("Using cached data from MongoDB.")
+            
+                print("Titles and links:", titles_links)
+                    
+                for topic in selected_terms:
+                    selected_titles_links = titles_links[topic]
             
             # Extract texts
             extracted_texts = extract_texts_concurrently(selected_titles_links)
