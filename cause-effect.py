@@ -111,8 +111,14 @@ def main():
         unsafe_allow_html=True
     )
     # Company input
-    company_name = st.text_input("Enter Company Name", placeholder="e.g., Zomato, Swiggy")
-                
+    #company_name = st.text_input("Enter Company Name", placeholder="e.g., Zomato, Swiggy")
+    # Company selection dropdown
+    company_name = st.selectbox(
+        "Select a Company:",
+        options=["Zomato", "Swiggy", "Zepto", "BigBasket"],
+        index=0
+    )
+    
     zomato_indirect_search_terms = [
     "urbanization impact on food delivery",
     "disposable income food delivery trends",
@@ -183,13 +189,6 @@ def main():
         default=zomato_indirect_search_terms[:3]  # Pre-select a few terms
     )
     company_info = ""
-    
-    # Company selection dropdown
-    company_name = st.selectbox(
-        "Select a Company:",
-        options=["Zomato", "Swiggy", "Zepto", "BigBasket"],
-        index=0
-    )
     
     if company_name.lower() == "zomato":
         company_info = "Zomato is an Indian multinational restaurant aggregator and food delivery service founded in 2008. It provides users with information about restaurants, including menus and user reviews, while facilitating food delivery from partner restaurants across over 1,000 cities. Zomato operates several business models, including an aggregator model that lists restaurants, a delivery service for partners, and a subscription service called Zomato Gold that offers exclusive deals to users. Recently, Zomato has expanded into quick commerce with its acquisition of Blinkit, aiming to deliver groceries and essentials rapidly through a network of dark stores."
