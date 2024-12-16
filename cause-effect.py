@@ -134,7 +134,6 @@ def main():
     "environmental concerns food delivery",
     "delivery delays customer complaints",
     "adverse weather food delivery disruptions",
-    "pandemic restrictions food delivery",
     "discount wars food delivery profitability",
     "curfews impact food delivery services",
     "social media trends food delivery",
