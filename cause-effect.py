@@ -42,6 +42,7 @@ def save_to_mongodb(titles_links):
 # Function to read from MongoDB
 def read_from_mongodb():
     document = collection.find_one({"_id": "titles_links_time"})
+    print(f"Document read of db is {document}")
     return document
     
 class EffectMapGenerator:
