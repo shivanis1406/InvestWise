@@ -6,3 +6,4 @@ google-search-results
 newspaper3k
 lxml-html-clean
 plotly
+pymongo
